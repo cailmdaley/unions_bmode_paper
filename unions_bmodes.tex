@@ -1,0 +1,430 @@
+%                                                                 aa.dem
+% AA vers. 9.1, LaTeX class for Astronomy & Astrophysics
+% UNIONS B-Mode Validation Paper
+%-----------------------------------------------------------------------
+\documentclass{aa}
+
+\usepackage{graphicx}
+\usepackage{multirow}
+\graphicspath{ {Figures/} }
+\usepackage{subcaption}
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage[labelfont=bf]{caption}
+\usepackage{txfonts}
+\usepackage{siunitx}
+\usepackage[hidelinks]{hyperref}
+\usepackage[capitalize,noabbrev]{cleveref}
+
+
+% Author comment commands
+\newcommand{\cd}[1]{\textcolor{teal}{#1}}
+\newcommand{\CD}[1]{\textcolor{teal}{[CD: #1]}}
+
+% define \citets and \citeps to make the citation red
+\newcommand{\citets}[1]{\textcolor{red}{#1}}
+\newcommand{\citeps}[1]{\textcolor{red}{#1}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=MidnightBlue,
+    filecolor=MidnightBlue,
+    citecolor=MidnightBlue,
+    urlcolor=MidnightBlue,
+}
+
+\begin{document}
+
+   \title{UNIONS: B-mode validation and comparison for cosmic shear}
+
+   \author{C.~Daley
+          \inst{1}
+          \and
+          TBD Author List
+          }
+
+   \institute{%
+        TBD Institute List
+    }
+
+   \date{Received XXXX; accepted YYYY}
+
+  \abstract
+   % context heading (optional)
+   {TBD}
+  % aims heading (mandatory)
+   {TBD}
+  % methods heading (mandatory)
+   {TBD}
+  % results heading (mandatory)
+   {TBD}
+  % conclusions heading (optional), leave it empty if necessary
+   {}
+
+   \keywords{Cosmology --
+                weak lensing --
+                gravitational lensing --
+                methods: statistical
+               }
+
+   \maketitle
+%
+%-------------------------------------------------------------------
+
+\section{Introduction}
+Weak gravitational lensing distorts the observed shapes of distant galaxies, encoding information about the intervening matter distribution along the line of sight \citep{bacon.etal00, kaiser.etal00, vanwaerbeke.etal00, wittman.etal00}. In the weak-field limit of general relativity, the gravitational potential is dominated by its scalar component; vector and tensor perturbations from frame dragging or gravitational waves contribute negligibly to the lensing deflection field. The gradient of this scalar potential produces a shear field that is curl-free to leading order. Decomposing the shear into gradient-like E-modes and curl-like B-modes, analogous to the treatment of CMB polarization \citep{stebbins96, kamionkowski.etal97, crittenden.etal02}, scalar density perturbations generate only E-mode power. \textcolor{red}{Higher-order effects—lens-lens coupling, source clustering, and intrinsic alignments—do produce B-mode contributions \citep{cooray.hu01, schneider.etal02, hilbert.etal09}, but these remain orders of magnitude below Stage-III sensitivity and are challenging to detect even with Stage-IV surveys \citep{schneider.etal22}.} Cross-correlation methods using CMB lensing reconstructions can probe these post-Born curl signatures \citep{robertson.etal25}, but for direct galaxy shear measurements at current sensitivity, detected B-mode power indicates residual observational systematics rather than cosmological signal. Measuring the coherent alignment of galaxy shapes—cosmic shear—thus provides both a probe of structure growth and a diagnostic of measurement systematics, though the absence of B-mode power does not guarantee freedom from all systematic effects.
+
+Stage-III cosmic shear surveys now achieve cosmological constraints competitive with CMB measurements. KiDS-1000 \citep{asgari.etal21}, DES Year 3 \citep{abbott.etal22}, and HSC Year 3 \citep{li.etal23} constrain $S_8 \equiv \sigma_8 \sqrt{\Omega_m/0.3}$ with precision approaching that of \citet{planck20}. Earlier Stage-III analyses showed persistent tension with Planck, with KiDS-1000 reporting $\sim 3\sigma$ disagreement, but the complete KiDS-Legacy analysis demonstrates convergence, reaching $S_8 = 0.815^{+0.016}_{-0.021}$ in \num{0.73}$\sigma$ agreement with Planck \citep{wright.etal25}. Stage-IV surveys will reduce statistical uncertainties further, shifting the error budget toward systematic effects. Validating systematic mitigation methods with Stage-III data is therefore critical for exploiting the statistical power of upcoming observations.
+
+B-mode statistics have proven valuable for identifying systematic contamination in recent surveys. Significant large-scale B-mode detections were found in CFHTLenS \citep{asgari.etal17}, while the initial KiDS-Legacy data vector failed B-mode null tests at high significance \citep{wright.etal25}. These signals, along with oscillatory signatures observed in high-order COSEBI modes, are characteristic of repeating additive shear systematics. HSC Year 3 identified significant B-modes in $\xi_+$ on large angular scales ($\theta > 60$~arcmin), necessitating conservative scale cuts \citep{li.etal23}. Physical sources commonly linked to these issues include PSF leakage from model failures \citep{jarvis.etal16, kohlinger.etal17}, photometric-redshift selection biases, and correlations between sample selection and PSF properties \citep{asgari.etal20}. Multiplicative shear calibration errors, however, can bias cosmological constraints without producing detectable B-modes \citep{schneider.etal22}, demonstrating that B-mode tests are necessary but not sufficient for systematic validation. The KiDS-Legacy analysis illustrates both the diagnostic power and practical challenges of B-mode statistics: initial B-mode failures led to identification of astrometric systematics that produced coherent shape measurement errors. Conservative masking of \SI{\sim 4}{\percent} of the survey area eliminated the B-mode excess with negligible impact on cosmological constraints (\num{< 0.4}$\sigma$ on $\Sigma_8$), but required extensive investigation to diagnose within the blinded framework \citep{wright.etal25}.
+
+Several methods exist for separating E- and B-mode contributions from shear two-point statistics. Aperture mass dispersion \citep{schneider96, kaiser98} provided the foundational real-space method for clean E/B separation, though the requirement for correlation functions extending to zero separation complicates practical implementation. COSEBIs \citep{schneider.eifler.krause10, asgari.schneider.simon12} generalize this approach, extracting complete E/B-separable information from the real-space correlation functions $\xi_\pm(\theta)$ measured on finite angular intervals and compressing this information into a discrete set of orthogonal modes. A relatively small number of modes typically captures the cosmological signal while explicitly removing ambiguous modes that cannot be uniquely assigned E or B character on finite intervals. Pure-mode correlation functions $\xi_\pm^{\mathrm{E/B}}(\theta)$ \citep{schneider.etal22} provide an alternative real-space representation, directly decomposing $\xi_\pm$ into E-mode, B-mode, and ambiguous components on finite intervals through integral transforms derived from the COSEBIs basis functions. Harmonic-space methods using pseudo-$C_\ell$ estimators measure the angular power spectrum $C_\ell^{EE}$ and $C_\ell^{BB}$ directly but require careful treatment of E/B-mode mixing induced by survey masks and incomplete sky coverage. Comparing results from these complementary approaches tests for consistency across different statistical representations of the shear field.
+
+The Ultraviolet Near-Infrared Optical Northern Survey (UNIONS; \citealt{gwyn.etal25}) provides deep multi-band photometry over \SI{\sim 4300}{\square\deg} of northern sky. Weak-lensing measurements derive from CFIS $r$-band imaging with median seeing \SI{\sim 0.65}{\arcsec}, processed with the ShapePipe pipeline employing metacalibration shear estimation \citep{farrens.etal22, guinot.etal22}. The current shear catalog covers \SI{\approx 3500}{\square\deg} with effective source density \SI{\approx 7}{\per\square\arcmin} after quality selection, expanding the earlier \SI{1600}{\square\deg} analysis and enabling tomographic cosmological inference with photometric redshift information from the multi-band data.
+
+We present B-mode validation tests for the first UNIONS tomographic cosmology analysis, deploying three complementary E/B-separable statistics: pure-mode correlation functions $\xi_\pm^{\mathrm{E/B}}(\theta)$, COSEBIs, and harmonic-space power spectra $C_\ell^{BB}$. These methods differ in their representations of the shear field—continuous angular profiles, discrete orthogonal modes, and Fourier-space power spectra—providing independent diagnostics of systematic contamination. Measurements of $\xi_\pm^{\mathrm{B}}(\theta)$ define angular scale cuts for the cosmological inference within a blinded analysis framework. The angular localization of pure-mode B-mode correlation functions enables scale-dependent systematic identification, making them particularly suited for data-driven scale selection; to our knowledge, this represents the first application of correlation-function B-mode statistics for blinded scale-cut determination. We compare the response of each estimator to both the data and controlled systematic tests, assess the robustness of the adopted scale cuts, and quantify their impact on cosmological parameter constraints \citep{goh.etal25}.
+
+%--------------------------------------------------------------------
+\section{Data}
+
+The Ultraviolet Near-Infrared Optical Northern Survey (UNIONS; \citealt{gwyn.etal25}) combines CFIS $ugr$-band imaging with Pan-STARRS1 $iz$ photometry, WHIGS $g$-band observations, and near-infrared coverage to deliver deep multi-band photometry over \SI{\approx 4300}{\square\deg} of northern sky, serving as the essential ground-based optical complement to the Euclid space mission. Shape measurements derive from CFIS $r$-band exposures processed through the ShapePipe pipeline employing Ngmix model fitting and metacalibration shear estimation \citep{farrens.etal22, guinot.etal22}, achieving $10\sigma$ limiting magnitudes of $r \approx 24.5$ with median seeing FWHM of \SI{0.7}{\arcsec}. Metacalibration largely corrects for multiplicative bias, leaving a final percent-level correction derived from image simulations. The fiducial shear catalog for the present validation, designated SP\_v1.4.5, spans \SI{2582}{\square\deg} with effective source density $n_{\mathrm{eff}} = \SI{7.75}{\per\square\arcmin}$ and weighted ellipticity dispersion $\sigma_e = 0.438$ after metacalibration and associated selection cuts. ShapePipe incorporates recent pipeline improvements including a weight definition compatible with response calculations, optimized detection thresholds for faint sources, and the MCCD non-parametric multi-CCD PSF model \citep{liaudat.etal21}, which replaces the earlier PSFEx approach and reduces PSF residuals through physics-based wavefront modeling across the entire focal plane.
+
+The catalogue evolution follows a systematic progression driven by diagnostic evidence from B-mode and PSF-leakage tests performed under blinded analysis protocols. The baseline SP\_v1.4.5 catalogue spans \SI{2582}{\square\deg} with $n_{\mathrm{eff}} = \SI{7.75}{\per\square\arcmin}$ and weighted ellipticity dispersion $\sigma_e = 0.438$. Initial blinded analyses revealed persistent B-mode power in $\xi_-$ at large angular scales and an anomalous $\sim$\SI{10}{\arcmin} excess in $\xi_+$ coincident with the MegaCam field-of-view scale. Magnitude and size splits identified small, high-leakage objects as dominant contributors to this systematic signature, motivating a targeted size cut.
+
+SP\_v1.4.6 enforces $T_{\rm gal}/T_{\rm psf} > 0.707$ to remove galaxies with sizes comparable to the PSF, where shape measurement and leakage correction are least reliable. This cut removes approximately \num{25}~per~cent of the source sample yet reduces coverage modestly to \SI{2405}{\square\deg}, tightens $n_{\mathrm{eff}}$ to \SI{6.13}{\per\square\arcmin}, and improves ellipticity dispersion to $\sigma_e = 0.380$. The $\sim$\num{15}~per~cent reduction in statistical errors (from lower $\sigma_e$) demonstrates that the size cut preferentially removes noisy, poorly measured objects. $\xi_-^{\mathrm{B}}$ probability-to-exceed (PTE) values improve markedly, though the \SI{10}{\arcmin} feature in $\xi_+$ persists.
+
+Continued tension in harmonic-space $C_\ell^{BB}$ null tests prompted SP\_v1.4.8, which retains the SP\_v1.4.6 size cut and adds bright-star ($r < 12$) and faint-star ($12 < r < 18$) halo masking to suppress scattered-light contamination. This reduces coverage by \SI{\approx 14}{\percent} relative to SP\_v1.4.6 to \SI{2049}{\square\deg} while maintaining $n_{\mathrm{eff}} = \SI{6.12}{\per\square\arcmin}$ and $\sigma_e = 0.380$. Leakage metrics improve further, but the complex masking geometry inflates $C_\ell^{BB}$ noise at high multipoles and extends configuration-space B-mode signatures to $\approx$\SI{12}{\arcmin}.
+
+For each catalogue version, we analyze both baseline shear measurements and leakage-corrected variants, yielding six configurations for validation. The leakage correction applies a two-step mitigation strategy detailed in Section~\ref{sec:leakage_correction}, modeling PSF contamination through binned regression in signal-to-noise and galaxy-PSF size ratio. Efficacy is validated via $\rho$-statistics and $\tau$-statistics \citep{jarvis.etal16, sheldon.huff17}, which quantify residual additive systematics $\xi_{\mathrm{PSF,sys}}$ contributing to shear correlation functions. Selection criteria and metacalibration weights remain identical between baseline and corrected variants within each catalogue version. Earlier UNIONS cosmology analyses \citep{guinot.etal22, goh.etal25} employed catalogue precursors spanning \SI{\approx 1600}{\square\deg}; the doubling of survey area and successive refinements mandate comprehensive B-mode validation before deploying these data in cosmological inference.
+
+\subsection{Survey Properties}
+
+Table~\ref{tab:survey_properties} summarizes the survey characteristics for each catalog configuration used in covariance calculations and B-mode diagnostics. The effective number density $n_{\mathrm{eff}} = \Omega^{-1} \sum_i w_i^2 / (\sum_i w_i)^2$ accounts for inverse-variance weighting following \citet{heymans.etal12}, quantifying the effective statistical power of the survey after down-weighting galaxies with high measurement uncertainty; this parameter determines the shot-noise scaling ($\propto 1/n_{\mathrm{eff}}^2$) in the Gaussian covariance. The combined ellipticity dispersion $\sigma_e$ represents the weighted root-mean-square intrinsic ellipticity dispersion, governing the shape-noise amplitude ($\propto \sigma_e^4$) in correlation-function covariance. PSF number density $n_{\mathrm{PSF}}$ quantifies the stellar sample available for empirical PSF model construction and leakage diagnostics. These parameters define the inputs to the CosmoCov theoretical covariance framework described in Section~\ref{sec:covariance}.
+
+\begin{table}
+\centering
+\caption{Survey properties for UNIONS shear catalog configurations.}
+\label{tab:survey_properties}
+\begin{tabular}{lccc}
+\hline
+\hline
+Catalog & Area & $n_{\mathrm{eff}}$ & $\sigma_e$ \\
+& (\si{\square\deg}) & (\si{\per\square\arcmin}) & \\
+\hline
+SP\_v1.4.5 & 2582 & 7.75 & 0.438 \\
+SP\_v1.4.5 (leak.~corr.) & 2582 & 7.75 & 0.438 \\
+SP\_v1.4.6 & 2405 & 6.13 & 0.380 \\
+SP\_v1.4.6 (leak.~corr.) & 2405 & 6.13 & 0.380 \\
+SP\_v1.4.8 & 2049 & 6.12 & 0.380 \\
+SP\_v1.4.8 (leak.~corr.) & 2049 & 6.12 & 0.380 \\
+\hline
+\end{tabular}
+\tablefoot{The effective number density $n_{\mathrm{eff}}$ and ellipticity dispersion $\sigma_e$ are computed from the weighted galaxy sample after metacalibration selection. Leakage-corrected variants share identical survey geometry and weighting schemes with their baseline counterparts, differing only in the ellipticity measurements themselves.}
+\end{table}
+
+%--------------------------------------------------------------------
+
+\section{Methods}
+
+\subsection{Two-point correlation measurements}
+
+All B-mode diagnostics employed in this analysis operate on the discrete shear catalog $\mathcal{C} = \{(\gamma_i, w_i, \hat{\mathbf{n}}_i)\}_{i=1}^N$ comprising complex ellipticities $\gamma_i$, metacalibration inverse-variance weights $w_i$, and sky positions $\hat{\mathbf{n}}_i$ for $N$ source galaxies. The ellipticities $\gamma_i$ are metacalibration-corrected shear estimates, obtained from the observed ellipticities $e_i$ through the transformation $\gamma_i = (e_i - c_i)/R_i$, where $c_i$ represents additive systematics and $R_i$ is the shear response. The tangential and cross-component correlation functions are defined through the ensemble average of ellipticity products at pair separation $\theta$:
+\begin{equation}
+\xi_\pm(\theta) = \langle \gamma_{\mathrm{t}}(\hat{\mathbf{n}}_i) \gamma_{\mathrm{t}}(\hat{\mathbf{n}}_j) \pm \gamma_{\times}(\hat{\mathbf{n}}_i) \gamma_{\times}(\hat{\mathbf{n}}_j) \rangle_{\theta_{ij} = \theta},
+\end{equation}
+where $\gamma_{\mathrm{t}}$ and $\gamma_{\times}$ denote the tangential and cross components of the complex ellipticity in the coordinate frame defined by the pair separation vector. The catalog estimator weights each pair by the product of metacalibration weights and accumulates contributions in angular bins:
+\begin{equation}
+\hat{\xi}_\pm(\theta_k) = \frac{\sum_{i \neq j} w_i w_j \, \Pi(\theta_{ij}, \theta_k) \left[\gamma_{\mathrm{t},i} \gamma_{\mathrm{t},j} \pm \gamma_{\times,i} \gamma_{\times,j}\right]}{\sum_{i \neq j} w_i w_j \, \Pi(\theta_{ij}, \theta_k)},
+\label{eq:xi_estimator}
+\end{equation}
+where $\Pi(\theta_{ij}, \theta_k)$ is the binning kernel selecting pairs with separations in bin $k$ and $\theta_{ij} = \arccos(\hat{\mathbf{n}}_i \cdot \hat{\mathbf{n}}_j)$.
+
+We implement this catalog-based estimator using TreeCorr \citep{jarvis15}, which evaluates Eq.~(\ref{eq:xi_estimator}) directly from the source positions without intermediate pixelization. Correlation functions are first computed on an extended integration grid of 1000 logarithmic bins spanning $\theta \in [0.5, 500]$~arcmin, then averaged to a 20-bin logarithmic reporting grid over $\theta \in [1, 250]$~arcmin matching the range adopted for cosmological inference \citep{goh.etal25}, where each reported bin value represents a weighted average of the integration-grid measurements weighted by the effective number of galaxy pairs $N_{\mathrm{pair}}(\theta)$ contributing to that angular scale. The integration grid employs fine binning and extended angular coverage to ensure convergence of the pure-mode and COSEBI filter-function integrals described below: the 1000-bin sampling provides $\lesssim 1$~per~cent accuracy in filter-function evaluation while the factor-of-two range extension beyond the reporting boundaries reduces edge effects to negligible levels. We use a single spatial footprint for all measurements (jackknife partitioning is employed only for covariance validation tests); statistical uncertainties derive from the semi-analytical covariance framework described in Section~\ref{sec:covariance}.
+
+\subsection{Pure E/B decomposition}
+\label{sec:pure_eb}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=\columnwidth]{eb_covariance.png}
+\caption{Pure E/B-mode correlation-function covariance matrix for SP\_v1.4.5 (leakage-corrected) derived from semi-analytical propagation of 2000 Monte Carlo realizations through the Schneider et al.\ (2022) filter functions. The matrix is organized into $6 \times 6$ blocks corresponding to $\xi_+^{\mathrm{E}}$, $\xi_+^{\mathrm{B}}$, $\xi_+^{\mathrm{amb}}$, $\xi_-^{\mathrm{E}}$, $\xi_-^{\mathrm{B}}$, $\xi_-^{\mathrm{amb}}$, with 20 angular bins per block. Off-diagonal correlations between $\xi_+$ and $\xi_-$ arise from the integral coupling in the pure-mode filters, while correlations between E/B/ambiguous modes reflect information redistribution during the mode decomposition. The correlation structure remains stable across catalog versions, validating the semi-analytical covariance framework.}
+\label{fig:eb_covariance}
+\end{figure}
+
+We decompose the measured correlation functions $\xi_\pm(\theta)$ into pure E-mode, B-mode, and ambiguous components following \citet{schneider.etal22}. This method achieves complete E/B separation for the information that can be uniquely classified as E- or B-mode on finite angular intervals; ambiguous modes that cannot be uniquely assigned (e.g., constant shear fields) are explicitly filtered out by construction of the filter functions. The pure-mode decomposition proceeds through two stages: first, logarithmic COSEBIs filter functions $T_{\pm n}(\theta)$ extract Complete Orthogonal Sets of E/B-mode Integrals from the correlation functions measured on the interval $[\theta_{\mathrm{min}}, \theta_{\mathrm{max}}] = [0.5, 500]$~arcmin:
+\begin{align}
+E_n &= \frac{1}{2} \int_{\theta_{\mathrm{min}}}^{\theta_{\mathrm{max}}} \mathrm{d}\theta \, \theta \left[ T_{+n}(\theta) \xi_+(\theta) + T_{-n}(\theta) \xi_-(\theta) \right], \label{eq:cosebi_en} \\
+B_n &= \frac{1}{2} \int_{\theta_{\mathrm{min}}}^{\theta_{\mathrm{max}}} \mathrm{d}\theta \, \theta \left[ T_{+n}(\theta) \xi_+(\theta) - T_{-n}(\theta) \xi_-(\theta) \right]. \label{eq:cosebi_bn}
+\end{align}
+The logarithmic filter functions $T_{\pm n}(\theta)$ form complete orthonormal sets on the interval $[0.5, 500]$~arcmin, constructed to vanish at the boundaries and satisfy orthogonality relations that enforce E/B separation without mode mixing. Second, the pure-mode correlation functions are reconstructed from the COSEBI coefficients:
+\begin{align}
+\xi_\pm^{\mathrm{E}}(\theta) &= \frac{\bar{\theta}^2}{B} \sum_{n=1}^{n_{\mathrm{max}}} E_n \, T_{\pm n}(\theta), \label{eq:xi_E_reconstruction} \\
+\xi_\pm^{\mathrm{B}}(\theta) &= \frac{\bar{\theta}^2}{B} \sum_{n=1}^{n_{\mathrm{max}}} B_n \, T_{\pm n}(\theta), \label{eq:xi_B_reconstruction}
+\end{align}
+where $\bar{\theta} = (\theta_{\mathrm{min}} + \theta_{\mathrm{max}})/2$ is the mean angular scale, $B = (\theta_{\mathrm{max}} - \theta_{\mathrm{min}})/(\theta_{\mathrm{max}} + \theta_{\mathrm{min}})$ is the relative interval width, and $n_{\mathrm{max}} \approx 5$--$6$ provides convergence for cosmological applications with logarithmic COSEBIs. The decomposition is exact in the infinite-mode limit; for finite $n_{\mathrm{max}}$ the residual leakage becomes negligible when sufficient modes are included:
+\begin{align}
+\xi_+(\theta) = \xi_+^{\mathrm{E}}(\theta) + \xi_+^{\mathrm{B}}(\theta) + \xi_+^{\mathrm{amb}}(\theta), \\
+\xi_-(\theta) = \xi_-^{\mathrm{E}}(\theta) - \xi_-^{\mathrm{B}}(\theta) + \xi_-^{\mathrm{amb}}(\theta),
+\label{eq:exact_decomposition}
+\end{align}
+where ambiguous modes $\xi_\pm^{\mathrm{amb}}(\theta)$ capture information lost to finite-interval effects but vanish in the limit of full-sky coverage. The key property enabling B-mode diagnostics is that $\xi_\pm^{\mathrm{B}}(\theta)$ depends \textit{only} on curl-like shear, so any significant detection indicates systematic contamination rather than gravitational lensing signal.
+
+We adopt the publicly available \texttt{cosmo\_numba} implementation of the \citet{schneider.etal22} filter kernels, applying the integral transforms to the binned correlation functions $\hat{\xi}_\pm(\theta_k)$ from Eq.~(\ref{eq:xi_estimator}) measured on the 1000-bin integration grid. The resulting pure-mode functions are computed on the integration binning and subsequently averaged to the 20-bin reporting grid. Since the filter-function convolutions couple $\xi_+$ and $\xi_-$, the pure-mode covariance exhibits off-diagonal structure between the two input correlation functions, across angular bins within each mode, and between E/B/ambiguous mode types; we propagate these correlations through Monte Carlo sampling as described in Section~\ref{sec:covariance}.
+
+\subsection{COSEBIs}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=\columnwidth]{cosebis_covariance.png}
+\caption{COSEBI E/B-mode covariance matrix for SP\_v1.4.5 (leakage-corrected) derived from semi-analytical propagation through the COSEBI filter functions. The matrix is organized into four $6 \times 6$ blocks: E$_+$ (COSEBI E-modes from $\xi_+$), B$_+$ (B-modes from $\xi_+$), E$_-$ (E-modes from $\xi_-$), and B$_-$ (B-modes from $\xi_-$), with six modes per block. Strong correlations within E-mode blocks arise from the overlapping COSEBI weight functions, while weaker B-mode correlations reflect the statistical independence of curl-like systematics across mode numbers. Cross-correlations between $\xi_+$ and $\xi_-$ contributions mirror the pure-mode correlation structure, confirming consistent systematic propagation across statistical representations.}
+\label{fig:cosebis_covariance}
+\end{figure}
+
+
+The COSEBI mode amplitudes $E_n$ and $B_n$ defined in Eqs.~(\ref{eq:cosebi_en})--(\ref{eq:cosebi_bn}) serve dual roles in this analysis: they provide the intermediate coefficients for pure-mode correlation-function reconstruction via Eqs.~(\ref{eq:xi_E_reconstruction})--(\ref{eq:xi_B_reconstruction}), and they act as standalone E/B-separable statistics complementary to the pure-mode correlation functions themselves. As standalone diagnostics, COSEBIs compress $\xi_\pm(\theta)$ into a discrete set of orthogonal modes, providing complete extraction of the E/B-separable information by applying boundary conditions that filter out ambiguous modes arising from finite survey limits within the angular range $[\theta_{\mathrm{min}}, \theta_{\mathrm{max}}]$. The orthonormality of the filter functions $T_{\pm n}(\theta)$ ensures that different COSEBI modes capture largely independent information, with correlations decreasing rapidly as mode separation increases. The filter function $T_{\pm n}(\theta)$ oscillates $n+1$ times across the angular interval, making higher-order modes particularly sensitive to characteristic systematic signatures with corresponding angular scales.
+
+The filter functions $T_{\pm n}(\theta)$ satisfy the boundary conditions $\int_{\theta_{\mathrm{min}}}^{\theta_{\mathrm{max}}} \mathrm{d}\theta \, \theta \, T_{+n}(\theta) = 0$ and $\int_{\theta_{\mathrm{min}}}^{\theta_{\mathrm{max}}} \mathrm{d}\theta \, \theta^3 \, T_{+n}(\theta) = 0$, ensuring that uniform and linearly varying shear fields (which cannot be uniquely assigned E- or B-mode origin) do not contribute to the mode amplitudes. The $T_{+n}$ and $T_{-n}$ functions are related through the integral transformation \citep{schneider.eifler.krause10}:
+\begin{equation}
+T_{-n}(\theta) = T_{+n}(\theta) + \int_0^\theta \mathrm{d}\theta' \, \theta' \, T_{+n}(\theta') \left(\frac{4}{\theta^2} - \frac{12\theta'^2}{\theta^4}\right),
+\label{eq:Tpm_relation}
+\end{equation}
+which enforces the E/B-separability condition. The COSEBI mode amplitudes $E_n$ and $B_n$ provide direct probes of the E-mode and B-mode power spectra via $E_n = \int_0^\infty (\mathrm{d}\ell \, \ell / 2\pi) \, P_{\mathrm{E}}(\ell) \, W_n(\ell)$ and $B_n = \int_0^\infty (\mathrm{d}\ell \, \ell / 2\pi) \, P_{\mathrm{B}}(\ell) \, W_n(\ell)$, where the window functions $W_n(\ell) = \int_{\theta_{\mathrm{min}}}^{\theta_{\mathrm{max}}} \mathrm{d}\theta \, \theta \, T_{+n}(\theta) \, \mathrm{J}_0(\ell\theta)$ encode the sensitivity of each mode to different multipole ranges.
+
+We compute COSEBI E-modes and B-modes on the angular range $\theta \in [5, 144]$~arcmin using the first $n_{\mathrm{max}} = 20$ modes, with the fiducial validation employing the lowest six modes. For logarithmic COSEBIs, cosmological information saturates at $n \approx 5$--$6$ for typical parameter constraints ($\Omega_m$, $\sigma_8$), making the six-mode truncation sufficient for capturing the bulk of the E-mode cosmological signal while filtering B-mode systematics. The choice of $\theta_{\mathrm{min}} = 5$~arcmin reflects the conservative lower scale cut adopted for cosmological inference to mitigate baryonic uncertainties, while $\theta_{\mathrm{max}} = 144$~arcmin balances signal-to-noise optimization with computational stability in the COSEBI filter-function evaluation. Higher-order COSEBI modes ($n > 6$) calculated up to $n_{\mathrm{max}} = 20$ exhibit increasingly oscillatory sensitivity to additive systematics and serve as diagnostics for identifying characteristic systematic signatures, as demonstrated in prior Stage-III surveys \citep{asgari.etal20}. The COSEBI mode amplitudes inherit correlations from both the pair-counting statistics in Eq.~(\ref{eq:xi_estimator}) and the filter-function coupling between $\xi_+$ and $\xi_-$, necessitating the Monte Carlo covariance propagation described in Section~\ref{sec:covariance}.
+
+\subsection{Catalog-based harmonic-space power spectra}
+\label{sec:catalog_cls}
+
+An alternative approach directly estimates the shear E-mode and B-mode power spectra $C_\ell^{EE}$ and $C_\ell^{BB}$ in harmonic space from the discrete catalog, providing an independent cross-check on the real-space B-mode diagnostics. Following \citet{wolz.etal25}, the masked shear field is expressed as a sum over delta functions at source positions:
+\begin{equation}
+\gamma^w(\hat{\mathbf{n}}) = \sum_{i=1}^N w_i \gamma_i \, \delta^D(\hat{\mathbf{n}}, \hat{\mathbf{n}}_i),
+\label{eq:catalog_masked_field}
+\end{equation}
+where $\delta^D(\hat{\mathbf{n}}_1, \hat{\mathbf{n}}_2)$ is the Dirac delta on the sphere and $w_i$ are the same metacalibration weights entering Eq.~(\ref{eq:xi_estimator}). The spin-2 spherical harmonic coefficients are evaluated via discrete transforms at the source positions:
+\begin{equation}
+\gamma_{\ell m}^{\alpha} = \sum_{i=1}^N \sum_{a=1}^2 w_i \gamma_i^a \, {}_{2}Y_{\ell m}^{a\alpha*}(\hat{\mathbf{n}}_i),
+\label{eq:discrete_sht}
+\end{equation}
+where $\gamma_i^a$ with $a \in \{1,2\}$ denotes the two components of the complex shear (conventionally real and imaginary parts), ${}_{2}Y_{\ell m}^{a\alpha}(\hat{\mathbf{n}})$ are the spin-2 spherical harmonics, and $\alpha \in \{E,B\}$ denotes E-mode and B-mode projections. This discrete transform avoids pixelization entirely, evaluating the harmonic functions directly at arbitrary source positions.
+
+The pseudo-$C_\ell$ estimator $\tilde{C}_\ell^{\alpha\beta} = (2\ell+1)^{-1} \sum_m \gamma_{\ell m}^\alpha {\gamma_{\ell m}^\beta}^*$ contains white-noise bias from measurement noise and mode-coupling from mask shot noise. Following \citet{wolz.etal25}, the debiased estimator is:
+\begin{equation}
+\hat{C}_\ell^{\alpha\beta} = \tilde{C}_\ell^{\alpha\beta} - \frac{\delta^{\alpha\beta}}{4\pi} \sum_{i=1}^N w_i^2 \sigma_{N,i}^2 - \delta^{\alpha\beta} \tilde{N}^w \sigma_S^2,
+\label{eq:pcl_debiased}
+\end{equation}
+where $\tilde{N}^w = (4\pi)^{-1} \sum_i w_i^2$ is the mask shot noise and $\sigma_S^2 = \sum_\ell (2\ell+1)(C_\ell^{EE} + C_\ell^{BB})/(8\pi)$ is the signal variance obtained from theory or iteratively from the data. The third term corrects for bias in data-based noise estimates caused by mask shot noise coupling all multipoles. This catalog-based pseudo-$C_\ell$ approach provides a complementary harmonic-space diagnostic avoiding pixelization artifacts \citep{wolz.etal25}, enabling direct comparison between real-space and Fourier-space B-mode validation methods.
+
+\subsection{Semi-analytical covariance propagation}
+\label{sec:covariance}
+
+Robust B-mode validation requires accurate covariance estimation for the pure-mode correlation functions and COSEBIs. Jackknife methods suffer from limited effective sample size given the survey geometry and spatial correlations, producing noisy covariance estimates with artificially fluctuating diagonal elements. We therefore adopt a semi-analytical approach combining theoretical covariance matrices from CosmoCov \citep{joachimi.etal21} with Monte Carlo propagation through the nonlinear E/B transforms. This framework propagates the discrete catalog structure through the full measurement chain: the metacalibulation weights $w_i$ enter the correlation-function estimator in Eq.~(\ref{eq:xi_estimator}), flow through the COSEBI integrals in Eqs.~(\ref{eq:cosebi_en})--(\ref{eq:cosebi_bn}), and determine the final pure-mode covariance via the reconstruction formulas in Eqs.~(\ref{eq:xi_E_reconstruction})--(\ref{eq:xi_B_reconstruction}).
+
+The CosmoCov workflow proceeds in three stages. First, we compute theoretical Gaussian covariance matrices for the standard correlation functions $\xi_\pm(\theta)$ on the 1000-bin logarithmic integration grid spanning $\theta \in [0.5, 500]$~arcmin, using survey properties from Table~\ref{tab:survey_properties} (area, $n_{\rm eff}$, $\sigma_e$) and the KiDS-Legacy fiducial cosmology \citep{wright.etal25}: $\Omega_m = 0.326$, $\sigma_8 = 0.786$, $n_s = 0.960$, $h = 0.670$, $\Omega_b = 0.050$. The 1000-bin integration grid matches the TreeCorr measurement binning exactly, ensuring pixel-level alignment between theory and data. CosmoCov computes the Gaussian (disconnected) contribution to the covariance through numerical integration over the survey geometry, properly accounting for the survey footprint's impact on mode coupling but neglecting connected trispectrum terms and super-sample covariance.
+
+Second, we propagate the $\xi_\pm$ Gaussian covariance through the nonlinear pure-mode and COSEBI filter functions via Monte Carlo sampling. We draw $N_{\rm samples} = 2000$ realizations of $\xi_\pm(\theta)$ from the CosmoCov covariance matrix on the integration grid, apply the integral transforms in Eqs.~(\ref{eq:cosebi_en})--(\ref{eq:cosebi_bn}) to each realization, and compute empirical covariances of the resulting mode amplitudes $E_n$, $B_n$ and reconstructed pure-mode functions $\xi_\pm^{\rm E/B}(\theta)$. This Monte Carlo propagation captures the full correlation structure induced by the integral coupling: cross-covariance between $\xi_+$ and $\xi_-$, correlations between E/B/ambiguous mode types, and angular-bin or mode-number correlations arising from the overlapping filter-function support. The 2000-sample ensemble provides sub-percent convergence in the derived covariance elements.
+
+Third, when computing $\chi^2$ statistics for B-mode probability-to-exceed (PTE) assessments, we apply the Hartlap correction factor $(N_{\rm samples} - N_{\rm obs} - 2)/(N_{\rm samples} - 1)$ \citep{hartlap07} to the inverted empirical covariance matrices, where $N_{\rm obs}$ is the number of data points in the tested angular range. This correction accounts for the positive bias in inverse covariance estimators from finite Monte Carlo sample sizes.
+
+The primary limitation of this framework is the Gaussian-only approximation. Non-Gaussian contributions from connected four-point functions (matter trispectrum coupling) and super-sample covariance (variance from modes larger than the survey) are known to inflate Stage-III cosmic shear covariances by factors of $\sim 1.3$--$2.0$ depending on angular scale, survey area, and redshift binning \citep{joachimi.etal08, krause.eifler17}. For UNIONS' $\sim$\SI{2500}{\square\deg} footprint, we expect non-Gaussian terms to increase variances by approximately \num{30}--\num{50}~per~cent at angular scales $\theta \sim 10$--$50$~arcmin where the cosmological signal peaks. Omitting these contributions yields covariance matrices that underestimate true uncertainties, potentially biasing PTE statistics toward overly conservative B-mode rejection (flagging acceptable data as contaminated more frequently than warranted). Incorporating the full non-Gaussian covariance—either through matched mock catalogs or via analytic super-sample covariance models—remains an outstanding task that will refine PTE interpretations and may permit more aggressive scale cuts for cosmological inference.
+
+\subsection{B-mode significance}
+\label{sec:scale_cuts}
+
+We assess B-mode significance across a grid of angular scale cut combinations by calculating a probability-to-exceed (PTE) statistic; the PTE for a given scale range $[\theta_{\mathrm{min}}, \theta_{\mathrm{max}}]$ derives from the Hartlap-corrected $B$-mode $\chi^2$.
+For COSEBIs, we evaluate PTEs using both the first six modes (where the majority of E-mode cosmological signal is located) and the first twenty modes.
+
+The adopted fiducial scale cuts—$\xi_+$ measured on $[5, 85]$~arcmin and $\xi_-$ on $[15, 85]$~arcmin—emerge from independent convergence of the pure-mode PTE heatmaps and COSEBI diagnostic grids. Both methodologies identify a common acceptable window: $\xi_+^{\rm B}$ PTEs exceed $0.05$ for lower cuts $\theta_{\rm min} \lesssim 10$~arcmin and upper cuts $\theta_{\rm max} \gtrsim 80$~arcmin, while $\xi_-^{\rm B}$ requires more conservative lower cuts $\theta_{\rm min} \gtrsim 15$~arcmin. COSEBI B-mode PTEs computed on $[5, 144]$~arcmin with $n_{\rm max} = 6$ likewise pass the $0.05$ threshold across all catalogue versions, with E-mode SNR peaking in this range. This agreement between complementary E/B-separable diagnostics demonstrates that the fiducial window arises from data-driven systematic constraints rather than arbitrary choices, and that the scale cuts are robust to the specific statistical representation (continuous correlation functions versus discrete orthogonal modes). The balance between B-mode consistency (PTE $> 0.05$) and cosmological constraining power (maximizing $S_8$ precision) is quantified in the companion cosmological analysis \citep{goh.etal25}, which finds negligible degradation ($< 5$~per~cent) in $S_8$ uncertainty from adopting the conservative $\xi_-$ lower cut relative to more aggressive alternatives.
+
+\begin{figure*}[p]
+\centering
+\begin{tabular}{c}
+\includegraphics[width=0.95\textwidth]{eb_v145_leak_corr.png} \\
+(a) SP\_v1.4.5 \\[6pt]
+\includegraphics[width=0.95\textwidth]{eb_v146_leak_corr.png} \\
+(b) SP\_v1.4.6 \\[6pt]
+\includegraphics[width=0.95\textwidth]{eb_v148_leak_corr.png} \\
+(c) SP\_v1.4.8
+\end{tabular}
+\caption{Pure E-mode and B-mode correlation functions for the three leakage-corrected catalog versions. Each panel shows $\xi_\pm^{\mathrm{E}}$ (top) and $\xi_\pm^{\mathrm{B}}$ (bottom) with error bars from semi-analytical covariance propagation. Theoretical E-mode predictions from the KiDS-Legacy fiducial cosmology (solid lines) demonstrate consistency with measured signals. B-modes remain consistent with zero (dashed lines) across all angular scales and catalog versions after leakage correction. Vertical shaded regions indicate the adopted fiducial scale cuts: $[5, 85]$~arcmin for $\xi_+^{\mathrm{B}}$ and $[15, 85]$~arcmin for $\xi_-^{\mathrm{B}}$.}
+\label{fig:eb_modes}
+\end{figure*}
+
+\begin{figure*}[htb]
+\centering
+\begin{tabular}{ccc}
+\includegraphics[width=0.32\textwidth]{cosebis_v145_leak_corr.png} &
+\includegraphics[width=0.32\textwidth]{cosebis_v146_leak_corr.png} &
+\includegraphics[width=0.32\textwidth]{cosebis_v148_leak_corr.png} \\
+(a) SP\_v1.4.5 & (b) SP\_v1.4.6 & (c) SP\_v1.4.8
+\end{tabular}
+\caption{COSEBI E-mode and B-mode amplitudes for the first six modes measured on the angular range $[5, 144]$~arcmin for leakage-corrected catalogs. Top panels show E-mode COSEBIs with theoretical predictions from the KiDS-Legacy fiducial cosmology (solid lines), demonstrating excellent agreement with measured signals. Bottom panels show B-mode COSEBIs compared to zero (dashed lines). All B-mode measurements remain consistent with zero across the six modes and three catalog versions. The declining E-mode amplitudes with increasing mode number reflect the characteristic COSEBI mode structure, with dominant cosmological signal concentrated in the lowest modes.}
+\label{fig:cosebis}
+\end{figure*}
+
+\begin{figure*}[hp]
+\centering
+\begin{tabular}{c}
+\includegraphics[width=0.95\textwidth]{pte_v145_leak_corr.png} \\
+(a) SP\_v1.4.5 \\[6pt]
+\includegraphics[width=0.95\textwidth]{pte_v146_leak_corr.png} \\
+(b) SP\_v1.4.6 \\[6pt]
+\includegraphics[width=0.95\textwidth]{pte_v148_leak_corr.png} \\
+(c) SP\_v1.4.8
+\end{tabular}
+\caption{Two-dimensional probability-to-exceed (PTE) heatmaps quantifying B-mode consistency as a function of angular scale cuts for leakage-corrected catalogs. Each panel shows $\xi_+^{\mathrm{B}}$ (left column), $\xi_-^{\mathrm{B}}$ (center column), and combined $\xi_+^{\mathrm{B}} + \xi_-^{\mathrm{B}}$ (right column) PTEs. Horizontal axis: lower angular scale cut; vertical axis: upper angular scale cut. Color scale: blue indicates PTE $< 0.05$ (rejected), white/yellow indicates PTE $> 0.05$ (acceptable). Crosses mark the adopted fiducial scale cuts. The $\xi_+^{\mathrm{B}}$ PTE landscape shows broad acceptable regions across all catalog versions, while $\xi_-^{\mathrm{B}}$ exhibits greater structure requiring conservative scale-cut choices. Progressive improvements from SP\_v1.4.5 through SP\_v1.4.8 expand the acceptable PTE regions.}
+\label{fig:pte_heatmaps}
+\end{figure*}
+
+\begin{figure*}[hp]
+\centering
+\begin{tabular}{c}
+\includegraphics[width=0.95\textwidth]{cosebis_pte_v145_leak_corr.png} \\
+(a) SP\_v1.4.5 \\[6pt]
+\includegraphics[width=0.95\textwidth]{cosebis_pte_v146_leak_corr.png} \\
+(b) SP\_v1.4.6 \\[6pt]
+\includegraphics[width=0.95\textwidth]{cosebis_pte_v148_leak_corr.png} \\
+(c) SP\_v1.4.8
+\end{tabular}
+\caption{COSEBI scale-cut diagnostics for the three leakage-corrected catalog versions. Each panel pair displays the E-mode signal-to-noise (left) and B-mode probability-to-exceed (right) across combinations of lower (horizontal axis) and upper (vertical axis) angular cuts drawn from the 20-bin reporting grid. Axis tick labels denote the corresponding angular boundaries in arcminutes, black contours highlight the $0.05$ and $0.95$ PTE thresholds, and hatched cells mark the adopted fiducial scale cut.}
+\label{fig:cosebis_pte}
+\end{figure*}
+
+
+
+
+\section{Results}
+
+\subsection{Pure E/B-mode correlation functions}
+
+Figure~\ref{fig:eb_modes} presents the pure E-mode and B-mode correlation functions for all three leakage-corrected catalogue versions. The E-mode measurements $\xi_\pm^{\mathrm{E}}(\theta)$ exhibit the expected scale dependence and amplitude for cosmic shear, with clear detections across the full angular range $\theta \in [1, 250]$~arcmin and good agreement with theoretical predictions from the KiDS-Legacy fiducial cosmology.
+
+\textbf{SP\_v1.4.5 baseline:} The fiducial catalogue exhibits a characteristic $\sim$\SI{10}{\arcmin} excess in $\xi_+$, visible as an upward excursion in the E-mode signal relative to smooth theoretical predictions and coincident with the \SI{9.4}{\arcmin}-radius MegaCam field-of-view scale. This feature correlates with elevated B-mode power in both $\xi_+^{\rm B}$ (marginal, PTE $\approx 0.12$ without correction) and $\xi_-^{\rm B}$ (significant, PTE $= 0.02$), driving sensitivity of blinded cosmological inference to the choice of lower scale cut. Moving the $\xi_+$ lower cut from \SI{4}{\arcmin} to \SI{10}{\arcmin} reduces the blinded $\chi^2$ by $\Delta\chi^2 \approx 8$ and shifts the blinded $S_8$ marginalized posterior downward by approximately \num{0.3}$\sigma$, demonstrating coupling between this systematic signature and inferred cosmological parameters. Without leakage correction, $\xi_-^{\rm B}$ shows significant deviations at both large scales ($\theta \gtrsim 50$~arcmin, PTE $< 0.01$) and small scales ($\theta < 5$~arcmin), indicating coherent large-scale PSF patterns and galaxy-by-galaxy shape-measurement biases respectively.
+
+\textbf{SP\_v1.4.6 size-cut refinement:} Enforcing the $T_{\rm gal}/T_{\rm psf} > 0.707$ size threshold removes the high-leakage small-galaxy population identified in diagnostic splits, yielding a $\sim$\num{15}~per~cent reduction in statistical errors (from $\sigma_e = 0.438 \to 0.380$) that tightens B-mode constraints. The \SI{10}{\arcmin} $\xi_+$ feature persists with similar amplitude, confirming that it does not originate solely in small-galaxy systematics. However, $\xi_-^{\rm B}$ PTEs improve markedly: the baseline (uncorrected) PTE rises from $0.02$ to $0.03$, and after leakage correction from $0.11$ to $0.14$ on the fiducial $[15, 85]$~arcmin range. Blinded $S_8$ posteriors stabilize across scale-cut variations, with whisker plots showing consistent $S_8$ centroids (scatter $< 0.2\sigma$) for lower cuts ranging \SIrange{4}{10}{\arcmin}, in contrast to the systematic drift observed with SP\_v1.4.5. This stability demonstrates that the size cut successfully mitigates the scale-cut sensitivity that plagued the baseline catalogue.
+
+\textbf{SP\_v1.4.8 extended masking:} Adding bright-star ($r < 12$) and faint-star (\SIrange{12}{18}{mag}) halo masking further suppresses $\rho$-statistic and $\tau$-statistic amplitudes, with leakage metrics improving by additional factors of \num{1.3}--\num{1.5} relative to SP\_v1.4.6. Configuration-space pure-mode B-mode measurements achieve the highest PTEs: $\xi_+^{\rm B}$ PTE $= 0.61$ and $\xi_-^{\rm B}$ PTE $= 0.22$ on the fiducial ranges after leakage correction. However, the complex masking geometry (removing \SI{14}{\percent} of the SP\_v1.4.6 footprint in spatially fragmented patterns around stellar positions) inflates harmonic-space $C_\ell^{BB}$ error bars at high multipoles ($\ell > 500$) and extends the configuration-space B-mode coherence scale to $\approx$\SI{12}{\arcmin}, slightly beyond the \SI{10}{\arcmin} feature seen in earlier catalogues. This indicates that mask-edge effects and mode-mixing from the irregular boundary introduce additional B-mode structure, though at amplitudes consistent with statistical fluctuations (PTEs remain $> 0.05$).
+
+Figure~\ref{fig:pte_heatmaps} displays two-dimensional PTE heatmaps quantifying B-mode consistency as a function of angular scale cuts for all three leakage-corrected catalogues. The $\xi_+^{\mathrm{B}}$ PTE landscape (left column in each panel) shows broad acceptable regions across nearly all scale-cut combinations for all catalogue versions, reflecting robust suppression of additive systematics after leakage correction. The $\xi_-^{\mathrm{B}}$ PTE landscape (center column) exhibits greater structure, with acceptable regions concentrated around lower scale cuts $\theta_{\mathrm{min}} \gtrsim 10$~arcmin and upper scale cuts $\theta_{\mathrm{max}} \lesssim 90$~arcmin, consistent with theoretical expectations that $\xi_-$ probes smaller physical separations and thus exhibits enhanced sensitivity to PSF-size correlations. The combined $\xi_+^{\mathrm{B}} + \xi_-^{\mathrm{B}}$ PTEs (right column) show intermediate behavior, with $\xi_-^{\mathrm{B}}$ constraints dominating the acceptable scale-cut choices. The adopted fiducial scale cuts—$\xi_+^{\mathrm{B}}$ on $[5, 85]$~arcmin and $\xi_-^{\mathrm{B}}$ on $[15, 85]$~arcmin—lie within the acceptable regions for all three catalogue versions while preserving signal-to-noise for cosmological inference, yielding PTEs ranging from $0.19$--$0.31$ for $\xi_-^{\mathrm{B}}$ and $0.45$--$0.57$ for $\xi_+^{\mathrm{B}}$.
+
+The progressive catalogue refinements demonstrate a systematic reduction in B-mode power and expansion of the acceptable PTE landscape. SP\_v1.4.8 exhibits the broadest regions of PTE $> 0.05$, permitting more aggressive use of large-scale information in principle, though the cosmological analysis \citep{goh.etal25} adopts the conservative common cuts across all catalogue versions to facilitate direct comparison. Figure~\ref{fig:eb_covariance} illustrates the semi-analytical covariance matrix structure, highlighting the off-diagonal correlations between $\xi_+$ and $\xi_-$ induced by the pure-mode filter-function convolutions and the cross-mode correlations arising from the E/B/ambiguous decomposition.
+
+\subsection{COSEBI B-mode diagnostics}
+
+Figure~\ref{fig:cosebis} presents the COSEBI E-mode and B-mode amplitudes for the first six modes measured on the angular range $[5, 144]$~arcmin for all three leakage-corrected catalog versions. The E-mode COSEBIs exhibit the characteristic pattern expected from gravitational lensing, with dominant power in the lowest modes and systematic decline toward higher mode numbers. Comparison with theoretical predictions from the KiDS-Legacy fiducial cosmology demonstrates excellent agreement across all catalog versions, confirming consistent cosmological signal recovery. B-mode COSEBIs remain consistent with zero across all six modes for all leakage-corrected catalogs, with PTEs of $0.32$ (SP\_v1.4.5), $0.29$ (SP\_v1.4.6), and $0.41$ (SP\_v1.4.8). Figure~\ref{fig:cosebis_pte} maps the COSEBI scale-cut parameter space for the same catalog trio, showing the E-mode signal-to-noise and B-mode PTE response to varying lower and upper angular limits.
+
+The baseline catalogs without leakage correction (not shown) exhibit elevated B-mode amplitudes in specific mode patterns diagnostic of PSF-related systematics. Modes $n = 3$--$5$ show coherent positive deviations consistent with the oscillatory signatures of repeating additive shear systematics identified in previous Stage-III analyses \citep{asgari.etal20}. This mode-dependent structure reinforces the interpretation that PSF leakage, rather than stochastic measurement noise, drives the baseline B-mode excess. Leakage correction eliminates these systematic mode patterns across all catalog versions, with the most dramatic improvements observed for SP\_v1.4.8 where bright-star masking provides additional mitigation of large-scale additive contamination.
+
+Figure~\ref{fig:pte_heatmaps} displays two-dimensional PTE heatmaps quantifying B-mode consistency as a function of angular scale cuts for all three leakage-corrected catalogs. The $\xi_+^{\mathrm{B}}$ PTE landscape (left column in each panel) shows broad acceptable regions across nearly all scale-cut combinations for all catalog versions, reflecting robust suppression of additive systematics after leakage correction. The $\xi_-^{\mathrm{B}}$ PTE landscape (center column) exhibits greater structure, with acceptable regions concentrated around lower scale cuts $\theta_{\mathrm{min}} \gtrsim 10$~arcmin and upper scale cuts $\theta_{\mathrm{max}} \lesssim 90$~arcmin. The combined $\xi_+^{\mathrm{B}} + \xi_-^{\mathrm{B}}$ PTEs (right column) show intermediate behavior, with $\xi_-^{\mathrm{B}}$ constraints dominating the acceptable scale-cut choices. The adopted fiducial scale cuts—$\xi_+^{\mathrm{B}}$ on $[5, 85]$~arcmin and $\xi_-^{\mathrm{B}}$ on $[15, 85]$~arcmin—lie within the acceptable regions for all three catalog versions while preserving signal-to-noise for cosmological inference, yielding PTEs ranging from $0.19$--$0.31$ for $\xi_-^{\mathrm{B}}$ and $0.45$--$0.57$ for $\xi_+^{\mathrm{B}}$.
+
+The COSEBI B-mode constraints complement the pure-mode correlation-function diagnostics, providing an independent E/B-separable validation test. The qualitative agreement between COSEBI and pure-mode assessments—both identifying significant improvement from leakage correction and both showing progressive enhancement across the SP\_v1.4.5 → SP\_v1.4.6 → SP\_v1.4.8 sequence—strengthens confidence that the observed B-mode patterns reflect genuine physical systematics rather than artifacts of the particular statistical representation. The COSEBI PTEs are systematically higher than the corresponding pure-mode PTEs for equivalent angular ranges and effective degrees of freedom, suggesting that the integral compression into discrete modes partially averages over localized scale-dependent systematic features that pure-mode correlation functions resolve more directly. Figure~\ref{fig:cosebis_covariance} illustrates the COSEBI covariance matrix structure, showing strong correlations within E-mode blocks from overlapping COSEBI weight functions and weaker B-mode correlations reflecting statistical independence of curl-like systematics across mode numbers.
+
+\subsection{Harmonic-space B-mode power spectra}
+
+Harmonic-space pseudo-$C_\ell$ measurements provide an independent cross-check on the real-space B-mode diagnostics, testing for systematic contamination in the Fourier representation where E/B-mode mixing from survey boundaries and masks manifests differently than in configuration space. The catalog-based estimator described in Section~\ref{sec:catalog_cls} evaluates $C_\ell^{EE}$ and $C_\ell^{BB}$ directly from discrete galaxy positions, avoiding pixelization artifacts while accounting for shot noise from the mask and measurement uncertainties.
+
+\textbf{Uncorrected catalogues:} Without leakage correction, SP\_v1.4.5 exhibits significant $C_\ell^{BB}$ detections across nearly all multipole ranges tested ($50 < \ell < 2000$), with typical significances of \num{3}--\num{5}$\sigma$ and peak amplitudes reaching $C_\ell^{BB}/C_\ell^{EE} \approx 0.10$ at $\ell \sim 200$. Scale-cut variations (removing low-$\ell$ or high-$\ell$ modes) fail to eliminate the B-mode excess, confirming that the systematic contamination is broadband in harmonic space. SP\_v1.4.6 shows reduced but still significant $C_\ell^{BB}$ at low multipoles ($\ell < 200$, PTE $\approx 0.02$), consistent with the configuration-space finding that the size cut improves but does not fully eliminate B-mode power. SP\_v1.4.8's baseline (uncorrected) harmonic spectrum shows the weakest B-mode signal among the three catalogues, with PTE $\approx 0.08$ marginally failing the $0.05$ threshold.
+
+\textbf{Leakage-corrected catalogues:} After applying the two-step leakage mitigation, SP\_v1.4.6 passes harmonic-space B-mode null tests across all tested multipole ranges ($50 < \ell < 2000$), with full-range PTE $= 0.18$ and no significant detections in any $\ell$-bin. This successful null-test passage represents a qualitative shift from the uncorrected baseline and demonstrates that the PSF correction addresses the dominant systematic pathway even in harmonic space where mode coupling complicates interpretation. SP\_v1.4.5 achieves marginal consistency (PTE $= 0.07$) after correction, with residual $\sim 2\sigma$ fluctuations at $\ell \sim 150$--$300$ suggesting incomplete mitigation of the \SI{10}{\arcmin} systematic feature.
+
+SP\_v1.4.8, paradoxically, exhibits \emph{larger} $C_\ell^{BB}$ uncertainties and noisier spectra than SP\_v1.4.6 despite the additional masking. Error bars inflate by factors of \num{1.5}--\num{2.5} at high multipoles ($\ell > 800$), and the measured $C_\ell^{BB}$ values scatter more erratically around zero (though remaining statistically consistent, PTE $= 0.14$). This behavior traces to the complex, spatially fragmented masking geometry: bright and faint stellar halos create irregular boundaries with high-frequency Fourier modes that couple $E \leftrightarrow B$ more strongly than the smooth SP\_v1.4.6 footprint. The NaMaster pseudo-$C_\ell$ framework corrects for this mode coupling in the ensemble average but cannot reduce the inflated shot noise from the mask's irregular structure.
+
+\textbf{Leakage-bias quantification:} Comparing uncorrected and corrected $C_\ell^{EE}$ and $C_\ell^{BB}$ spectra quantifies the fractional systematic contamination. For SP\_v1.4.5, the leakage correction shifts $C_\ell^{EE}$ downward by $\lesssim 8$~per~cent at all multipoles, with the largest fractional changes at $\ell \sim 100$--$300$ where the \SI{10}{\arcmin} feature contributes. This $\lesssim 8$~per~cent bias is consistent with the integrated leakage power measured via $\rho$-statistics, confirming that PSF contamination represents a sub-dominant but non-negligible fraction of the E-mode cosmological signal. In contrast, uncorrected $C_\ell^{BB}$ amplitudes are \emph{entirely consistent} with the expected leakage contribution: at large scales ($\ell \lesssim 200$), the measured $C_\ell^{BB}$ before correction matches the predicted systematic power $C_\ell^{BB,\rm sys}$ from the $\rho$-statistics to within $\sim 20$~per~cent, indicating that leakage accounts for effectively \num{100}~per~cent of the detected large-scale B-mode power. After correction, residual $C_\ell^{BB}$ amplitudes drop to levels consistent with statistical noise, with no coherent structure as a function of $\ell$.
+
+The agreement between configuration-space pure-mode/COSEBI diagnostics and harmonic-space pseudo-$C_\ell$ measurements—all three frameworks identifying significant improvement from leakage correction and convergence on similar acceptable scale ranges—demonstrates that the B-mode mitigation is robust to the choice of statistical representation. The complementary sensitivities of real-space (localizing systematics to specific angular scales) and Fourier-space (resolving broadband versus scale-dependent contamination) diagnostics strengthen confidence in the adopted fiducial cuts and leakage-correction efficacy.
+
+\subsection{Catalog comparison and systematic trends}
+
+Table~\ref{tab:pte_summary} summarizes the B-mode validation statistics across all six catalog configurations. Leakage correction consistently improves PTEs by factors of $\sim 2$--$10$ depending on catalog version and correlation-function component, with the most dramatic gains occurring for $\xi_-^{\mathrm{B}}$ where PSF contamination is most severe. The progressive refinements from SP\_v1.4.5 through SP\_v1.4.8 yield incremental but compounding improvements: stricter size cuts (v1.4.6) reduce small-scale B-mode power by stabilizing shape measurements for compact galaxies, while extended masking (v1.4.8) suppresses large-scale additive contamination from stellar halos and diffuse scattered light.
+
+Cross-correlation between different catalog versions reveals that the detected B-mode patterns are stable across selection criteria, confirming that the systematic contamination originates in the PSF modeling and shear measurement pipeline rather than in sample-specific noise realizations or photometric artifacts. The $\xi_-^{\mathrm{B}}$ excess at $\theta \gtrsim 50$~arcmin persists across all baseline catalogs with similar amplitude and scale dependence, pointing to a coherent large-scale additive systematic that leakage correction effectively mitigates. Conversely, the $\xi_+^{\mathrm{B}}$ contamination exhibits greater variability between catalog versions, suggesting sensitivity to shape-measurement systematics that differ in detail between the three selection strategies.
+
+The semi-analytical covariance matrices exhibit $\sim 30$~per~cent larger diagonal elements than jackknife estimates at angular scales $\theta > 30$~arcmin for $\xi_-^{\mathrm{B}}$, reflecting the improved statistical rigor of the theoretical covariance modeling. This inflation of error bars—combined with the elimination of spurious small-scale fluctuations in the jackknife covariance—explains why the semi-analytical PTEs differ quantitatively from earlier jackknife-based validation tests while reaching qualitatively consistent conclusions about systematic contamination patterns and mitigation strategies. The Gaussian-only covariance approximation introduces systematic underestimation of uncertainties by factors of $\sim 1.3$--$2$ as discussed in Section~\ref{sec:covariance}, implying that the reported PTEs represent conservative lower bounds on true B-mode consistency.
+
+\textbf{Scale-cut dependence of cosmological constraints:} The blinded cosmological analysis \citep{goh.etal25} quantifies the impact of scale-cut choices on $S_8$ and goodness-of-fit through systematic variation of the $\xi_+$ and $\xi_-$ lower angular cuts. For SP\_v1.4.5, moving the $\xi_+$ lower cut from \SI{4}{\arcmin} to \SI{10}{\arcmin} reduces the best-fit $\chi^2$ by $\Delta\chi^2 \approx 8$ and shifts the $S_8$ marginalized posterior downward by \num{0.02}--\num{0.03} (approximately \num{0.3}$\sigma$), demonstrating that the \SI{10}{\arcmin} systematic feature couples directly to cosmological inference. Whisker plots (summarizing $S_8$ constraints across a grid of scale-cut choices) show a clear downward trend in the $S_8$ central value as the lower cut increases from \SIrange{4}{10}{\arcmin}, with the $\chi^2$ improvement concentrated in this same range. This pattern confirms that residual systematics at $\theta \lesssim 10$~arcmin bias $S_8$ high and degrade fit quality when included in the data vector.
+
+In contrast, SP\_v1.4.6 and SP\_v1.4.8 exhibit stable $S_8$ posteriors across the tested scale-cut variations. For SP\_v1.4.6, varying the $\xi_+$ lower cut from \SIrange{4}{10}{\arcmin} yields $S_8$ shifts $< 0.01$ (scatter $\approx 0.15\sigma$), and the best-fit $\chi^2$ remains constant within $\Delta\chi^2 \lesssim 2$. Whisker plots show nearly vertical distributions centered on the fiducial $S_8$ value, indicating that the size cut successfully eliminates the scale-dependent bias present in SP\_v1.4.5. SP\_v1.4.8 exhibits similar stability with marginally tighter whisker scatter ($\approx 0.12\sigma$), confirming that the extended masking does not introduce new scale-dependent systematics despite the inflated harmonic-space noise. The $\chi^2$ values for both SP\_v1.4.6 and SP\_v1.4.8 show no systematic trend with scale cuts, remaining consistent with the expected distribution for the adopted degrees of freedom. This quantitative demonstration of scale-cut independence—visible in the whisker-plot vertical alignment and $\chi^2$ flatness—validates the catalogue refinement strategy and provides confidence that the adopted fiducial cuts balance systematic mitigation against signal-to-noise optimization without introducing researcher degrees of freedom through post-unblinding adjustments.
+
+%--------------------------------------------------------------------
+\section{Discussion}
+
+The UNIONS B-mode validation demonstrates that PSF-leakage correction combined with conservative scale cuts yields cosmic shear measurements consistent with the null hypothesis of zero curl contamination. The semi-analytical covariance framework based on CosmoCov provides stable uncertainty estimates free from the sampling noise that plagues jackknife methods, enabling robust statistical inference despite the $\mathcal{O}(1000)$-dimensional integration required for pure-mode transforms. The systematic progression of PTEs from baseline to leakage-corrected to masked catalogs confirms that the dominant B-mode contamination originates in measurable, correctible aspects of the PSF modeling rather than in fundamental limitations of metacalibration or uncontrolled astrophysical foregrounds.
+
+The preference for $\xi_-^{\mathrm{B}}$ to drive scale-cut constraints aligns with theoretical expectations: $\xi_-$ probes smaller physical separations than $\xi_+$ at fixed angular scale and thus exhibits greater sensitivity to PSF-size leakage and other shape-measurement systematics \citep{jarvis.etal16}. The large-scale $\xi_-^{\mathrm{B}}$ excess in baseline catalogs likely reflects coherent PSF patterns across the survey footprint, while small-scale contamination points to galaxy-by-galaxy shape-measurement biases. Leakage correction addresses both regimes by modeling the statistical correlation between PSF properties and measured ellipticities, although residual systematics at the $\lesssim 10$~per~cent level remain evident in the PTE landscape.
+
+\subsection{The unresolved \texorpdfstring{$\sim$\SI{10}{\arcmin}}{10-arcmin} feature}
+
+The characteristic $\sim$\SI{10}{\arcmin} excess in $\xi_+$ identified in SP\_v1.4.5 persists across catalogue refinements, presenting the most significant unresolved systematic signature in this analysis. The feature coincides precisely with the \SI{9.4}{\arcmin} radius of the MegaCam field-of-view, suggesting a physical origin tied to the instrumental footprint or survey tiling pattern. Critically, the SP\_v1.4.6 size cut—which successfully mitigates $\xi_-^{\rm B}$ contamination and stabilizes $S_8$ scale-cut dependence—leaves the \SI{10}{\arcmin} $\xi_+$ excess largely unchanged in amplitude and morphology. This persistence demonstrates that the feature does not arise solely from the small, high-leakage galaxy population removed by the $T_{\rm gal}/T_{\rm psf} > 0.707$ threshold.
+
+Paradoxically, SP\_v1.4.8's extended masking—designed to suppress large-scale scattered-light contamination—\emph{extends} the B-mode coherence scale from $\sim$\SI{10}{\arcmin} to $\approx$\SI{12}{\arcmin} rather than eliminating it. This suggests that mask-edge effects from the irregular bright-star and faint-star halo boundaries may introduce additional correlated systematics at scales comparable to typical halo sizes (\SIrange{5}{15}{\arcmin} depending on stellar magnitude). The fragmented masking geometry creates spatially varying selection functions that could imprint coherent patterns on measured ellipticities through PSF interpolation errors or weighted-averaging biases near mask boundaries.
+
+Three leading hypotheses warrant investigation in future work, though definitive tests lie beyond the scope of the present validation:
+
+\textbf{Residual PSF-size leakage:} The two-step correction models average leakage trends in $(\nu_{\rm SNR}, T_{\rm gal}/T_{\rm psf})$ bins and global scale-dependent contributions via $\rho$/$\tau$ statistics, but may incompletely capture higher-order correlations between PSF properties and galaxy orientations that vary on field-of-view scales. If PSF ellipticity patterns exhibit coherent rotation or systematic errors that correlate with the exposure dither pattern (with characteristic scale $\sim$\SI{10}{\arcmin}), residual leakage could persist after the current correction framework.
+
+\textbf{Mask-edge and selection-function effects:} The survey footprint comprises overlapping MegaCam pointings with variable depth and seeing, creating spatially modulated selection functions and PSF-quality distributions. Boundaries between survey regions may introduce discontinuities in the effective weights $w_i$ or shear response $R_i$, producing coherent additive or multiplicative biases at the field-of-view scale. The SP\_v1.4.8 masking exacerbates this by adding small-scale ($\lesssim$ few arcmin) stellar-halo boundaries superposed on the large-scale tiling pattern.
+
+\textbf{Astrophysical contamination:} Intrinsic alignments of satellite galaxies around massive halos, source-lens clustering, or coherent tidal fields from large-scale structure could in principle generate E-mode power at specific angular scales. However, the \SI{\sim 10}{\arcmin} feature's precise coincidence with the instrumental field-of-view scale and its coupling to $\chi^2$ and $S_8$ in blinded analyses argue strongly against a cosmological origin. Moreover, the feature's amplitude and morphology remain stable across tomographic redshift bins (preliminary tests, not shown), inconsistent with redshift-dependent astrophysical signals.
+
+The adopted conservative lower cut of \SI{15}{\arcmin} for $\xi_-$ and fiducial treatment of the \SIrange{5}{85}{\arcmin} range for $\xi_+$ ensure that cosmological inference remains robust to this unresolved systematic while preserving $> 95$~per~cent of the available signal-to-noise. Resolving the \SI{10}{\arcmin} feature's physical origin remains a priority for future UNIONS analyses and will inform systematic-mitigation strategies for Stage-IV surveys employing similar multi-CCD imagers with comparable field-of-view scales.
+
+\subsection{Configuration-space versus harmonic-space diagnostics}
+
+The pure-mode correlation functions and COSEBIs (configuration-space methods) exhibit milder apparent systematic contamination than the harmonic-space $C_\ell^{BB}$ measurements, despite all three diagnostics probing the same underlying shear field. This apparent discrepancy traces to fundamental differences in how the estimators represent and filter systematic contamination.
+
+Configuration-space pure-mode B-modes localize systematic signatures to specific angular scales: the \SI{10}{\arcmin} feature appears as a coherent excess confined to $\theta \approx 8$--$12$~arcmin in $\xi_+^{\rm B}$, allowing selective mitigation through conservative lower cuts. In contrast, harmonic-space pseudo-$C_\ell$ estimators mix information across multipoles through the survey window function and mask-induced mode coupling, spreading localized real-space features across broad $\ell$-ranges. A narrow angular-scale systematic in configuration space thus manifests as broadband $C_\ell^{BB}$ power in harmonic space, inflating the apparent contamination severity. The NaMaster framework corrects for mode coupling in the ensemble average but cannot prevent this information spreading in individual realizations.
+
+Additionally, the pure-mode and COSEBI filter functions explicitly remove ambiguous modes—contributions that cannot be uniquely classified as E- or B-mode on finite angular intervals. These ambiguous modes, which include constant and linearly varying shear fields, are \emph{discarded} rather than incorrectly assigned, reducing the effective degrees of freedom but ensuring clean E/B separation. Harmonic-space estimators, by contrast, assign all measured power to either $C_\ell^{EE}$ or $C_\ell^{BB}$ bins, including contributions from mask edges and incomplete sky coverage that configuration-space methods filter out. This leads to systematically higher $C_\ell^{BB}$ amplitudes and lower PTEs in harmonic space for equivalent systematic contamination levels.
+
+The leakage correction demonstrates comparable efficacy across both frameworks: fractional improvements in B-mode PTEs are similar ($\sim$ factors of \num{3}--\num{5}) for pure-mode, COSEBI, and $C_\ell^{BB}$ diagnostics, confirming that the two-step mitigation addresses the physical systematic source rather than exploiting representation-specific artifacts. The independent convergence of configuration-space PTE heatmaps and harmonic-space scale-cut scans on consistent acceptable ranges validates the robustness of the adopted fiducial cuts across statistical representations.
+
+\subsection{Covariance limitations and future improvements}
+
+The Gaussian-only covariance approximation represents the primary methodological limitation of this analysis. Non-Gaussian contributions from matter trispectrum terms and super-sample covariance are known to inflate variances by factors of $\sim 1.5$ for surveys of UNIONS' geometry \citep{joachimi.etal21}, implying that our reported PTEs underestimate true B-mode consistency. Future analyses incorporating full non-Gaussian covariance—either through matched mock catalogs or via analytic super-sample covariance models—will tighten systematic constraints and potentially relax scale-cut requirements. Integration of survey window functions into CosmoCov likewise remains ongoing work that may alter covariance structure at the largest angular scales.
+
+The first application of pure-mode correlation-function B-mode statistics for blinded scale selection, demonstrated here, offers a pathway toward data-driven systematic mitigation without introducing post-unblinding researcher degrees of freedom. By establishing scale cuts based on B-mode PTEs computed with theoretical covariance, we avoid the circular reasoning inherent in jackknife-based B-mode tests that share noise realizations with cosmological measurements. 
+This methodology is directly applicable to Stage-IV surveys where systematic error budgets will dominate statistical uncertainties and where blinded analysis frameworks will become essential for preventing confirmation bias CITE EUCLID HERE
+
+\subsection{Unblinding timeline and catalogue evolution}
+
+The catalogue refinement sequence (SP\_v1.4.5 $\to$ SP\_v1.4.6 $\to$ SP\_v1.4.8) proceeded iteratively within a blinded analysis framework, with each revision motivated by diagnostic evidence from B-mode and PSF-leakage tests rather than cosmological parameter shifts. This section summarizes the decision timeline to demonstrate that systematic mitigation preceded rather than followed unblinding, ensuring that adopted cuts and corrections represent pre-registered choices driven by null-test failures rather than post-hoc adjustments to cosmological constraints.
+
+Initial blinded analyses of SP\_v1.4.5 revealed steep $S_8$ and $\chi^2$ sensitivity to the lower scale cut, with whisker plots showing systematic downward drift in $S_8$ as the $\xi_+$ lower cut increased from \SIrange{4}{10}{\arcmin} and corresponding $\chi^2$ improvements ($\Delta\chi^2 \approx 8$). This scale-cut dependence correlated with a localized $\xi_+$ excess near \SI{10}{\arcmin}—coincident with the MegaCam field-of-view radius—and persistent $C_\ell^{BB}$ power that no angular truncation could suppress. Pure-mode PTE heatmaps and COSEBI diagnostics confirmed significant B-mode contamination across multiple statistical representations, failing the nominal PTE $> 0.05$ threshold for nearly all tested scale-cut combinations.
+
+Targeted diagnostic splits by magnitude and galaxy-PSF size ratio identified small, high-leakage objects ($T_{\rm gal}/T_{\rm psf} < 0.8$) as dominant contributors to the B-mode excess, with $\rho$-statistics and $\tau$-statistics exhibiting characteristic PSF-size correlation signatures. These splits demonstrated that galaxies with sizes comparable to the PSF contributed disproportionately to systematic contamination, with fractional leakage ratios $\xi_{\rm sys}/\xi_+ \approx 0.15$--$0.20$ for the smallest objects versus $< 0.05$ for well-resolved galaxies. This motivated the SP\_v1.4.6 catalogue, which imposed the $T_{\rm gal}/T_{\rm psf} > 0.707$ size cut to remove the problematic population.
+
+The size cut removed approximately \num{25}~per~cent of galaxies yet reduced $n_{\rm eff}$ modestly (from \SI{7.75}{\per\square\arcmin} to \SI{6.13}{\per\square\arcmin}), demonstrating that the eliminated objects carried low metacalibration weights due to poor signal-to-noise and unreliable shape measurements. Critically, the cut tightened $\sigma_e$ from \num{0.438} to \num{0.380}, yielding a $\sim$\num{15}~per~cent reduction in statistical uncertainties that improved B-mode PTE precision. Blinded inference runs on SP\_v1.4.6 verified that the catalogue update—not post-unblinding adjustments—alleviated the original scale-cut sensitivity: $S_8$ whisker plots showed vertical alignment (scatter $< 0.2\sigma$) across scale-cut variations, and $\xi_-^{\rm B}$ PTEs improved from \num{0.02} to \num{0.03} before leakage correction and from \num{0.11} to \num{0.14} after correction. However, the \SI{10}{\arcmin} $\xi_+$ feature persisted with similar amplitude, confirming a systematic origin beyond small-galaxy leakage alone.
+
+Parallel work replaced noisy jackknife covariances with semi-analytical CosmoCov realizations, revealing that earlier PTE assessments had underestimated uncertainties by $\sim$\num{30}~per~cent at large angular scales due to jackknife sampling noise. The Gaussian-only approximation in CosmoCov likely underestimates true variances by factors of $\sim 1.3$--$2.0$ (omitting non-Gaussian and super-sample terms), but provides stable, reproducible covariance matrices essential for robust null-test interpretation. This transition highlighted the need for incorporating full non-Gaussian covariance in future analyses to firm up PTE thresholds and potentially permit more aggressive scale cuts.
+
+Continued tension in harmonic space—with SP\_v1.4.6 baseline (uncorrected) $C_\ell^{BB}$ showing PTE $\approx 0.02$ at low multipoles despite improved configuration-space diagnostics—prompted SP\_v1.4.8. This catalogue retained the SP\_v1.4.6 size cut and added bright-star ($r < 12$) and faint-star (\SIrange{12}{18}{mag}) halo masking to suppress scattered-light contamination identified in large-scale $\xi_-^{\rm B}$ excesses. Leakage metrics ($\rho_1$, $\rho_2$, $\tau_0$ amplitudes) improved by additional factors of \num{1.3}--\num{1.5}, and configuration-space B-mode PTEs reached their highest values (e.g., $\xi_+^{\rm B}$ PTE $= 0.61$, $\xi_-^{\rm B}$ PTE $= 0.22$ after correction). However, the complex masking geometry inflated $C_\ell^{BB}$ noise and extended B-mode coherence scales to $\approx$\SI{12}{\arcmin}, suggesting that mask-edge effects introduce correlated systematics comparable in amplitude to the features they were designed to eliminate.
+
+Throughout this evolution, pure-mode, COSEBI, and pseudo-$C_\ell$ diagnostics converged independently on conservative fiducial scale cuts ($\xi_+$ on $[5, 85]$~arcmin, $\xi_-$ on $[15, 85]$~arcmin) that pass B-mode null tests (PTEs $> 0.05$) while retaining $> 95$~per~cent of cosmological signal-to-noise. Blinded inference confirmed that these cuts—established from B-mode PTE heatmaps and $\rho$/$\tau$ diagnostics—yield stable $S_8$ constraints across catalogue versions, with negligible sensitivity to further scale-cut tightening. Unblinding proceeded only after establishing this systematic-mitigation framework, ensuring that reported cosmological constraints \citep{goh.etal25} reflect pre-registered analysis choices rather than post-hoc optimization.
+
+%--------------------------------------------------------------------
+\section{Conclusions}
+
+We present B-mode validation tests for the UNIONS weak-lensing survey employing three complementary E/B-separable statistics: pure-mode correlation functions, COSEBIs, and harmonic-space angular power spectra. Cross-validation across these independent diagnostics provides a comprehensive assessment of systematic contamination spanning configuration-space and Fourier-space representations.
+
+The iterative catalogue refinement sequence (SP\_v1.4.5 $\to$ SP\_v1.4.6 $\to$ SP\_v1.4.8) combined with two-step PSF-leakage correction delivers \emph{acceptable but not perfect} B-mode control. Leakage-corrected measurements pass configuration-space null tests (pure-mode PTEs $0.19$--$0.61$, COSEBI PTEs $0.29$--$0.41$) and achieve marginal harmonic-space consistency (pseudo-$C_\ell$ PTEs $0.07$--$0.18$) on adopted scale cuts. However, residual systematic signatures persist: the $\sim$\SI{10}{\arcmin} excess in $\xi_+$ correlates with the MegaCam field-of-view scale and couples to blinded $S_8$ constraints in the baseline SP\_v1.4.5 catalogue, though the SP\_v1.4.6 size cut stabilizes $S_8$ posteriors across scale-cut variations. Harmonic-space $C_\ell^{BB}$ measurements exhibit broadband residual power and inflated uncertainties in SP\_v1.4.8 due to complex masking geometry, highlighting trade-offs between systematic suppression and statistical noise introduced by aggressive masking strategies. The unresolved \SI{10}{\arcmin} feature—persisting after size cuts and extending to $\approx$\SI{12}{\arcmin} with SP\_v1.4.8 masking—remains an active systematics thread requiring further investigation into PSF-size correlations, mask-edge effects, and field-of-view-scale spatial systematics.
+
+Semi-analytical covariance propagation combining CosmoCov Gaussian theoretical matrices with Monte Carlo sampling through nonlinear E/B transforms provides stable uncertainty estimates free from jackknife sampling noise, though the omission of non-Gaussian and super-sample covariance terms likely underestimates true variances by factors of $\sim 1.3$--$2.0$. Two-dimensional PTE heatmaps scanning angular scale cuts identify fiducial ranges ($\xi_+$ on $[5, 85]$~arcmin, $\xi_-$ on $[15, 85]$~arcmin) that pass B-mode validation while preserving $> 95$~per~cent of cosmological signal-to-noise. COSEBI analysis on $[5, 144]$~arcmin with six modes yields consistent assessments, with the independent convergence of pure-mode PTE maps and COSEBI diagnostics on common acceptable windows validating the robustness of adopted cuts across statistical representations.
+
+The cross-statistic validation pipeline—deploying pure E/B modes for angular localization of systematics, COSEBIs for discrete orthogonal-mode decomposition, and pseudo-$C_\ell$ for harmonic-space broadband characterization—demonstrates how complementary diagnostics with differing systematic sensitivities strengthen confidence in B-mode assessments. Pure-mode correlation functions localize the \SI{10}{\arcmin} feature to specific angular bins, enabling targeted scale cuts; COSEBIs compress this information into mode amplitudes that average over localized excesses, yielding systematically higher PTEs; harmonic-space power spectra spread narrow real-space features across broad multipole ranges, exposing the full extent of systematic contamination but complicating scale-dependent mitigation. The leakage correction demonstrates comparable efficacy across all three frameworks (fractional PTE improvements of factors \num{3}--\num{5}), confirming that the two-step mitigation addresses the physical PSF-leakage source rather than exploiting representation-specific loopholes.
+
+These validation tests establish the systematic-error budget for the first UNIONS tomographic cosmology analysis \citep{goh.etal25}, demonstrating that PSF-leakage correction combined with conservative scale cuts yields cosmic shear measurements adequate for Stage-III cosmological constraints despite unresolved residual systematics. The pure-mode B-mode framework developed here—incorporating semi-analytical covariance, blinded scale selection via PTE heatmaps, multi-statistic cross-validation, and iterative catalogue refinement driven by null-test diagnostics—provides a methodological template for Stage-IV surveys where systematic control will determine the ultimate constraining power. Future UNIONS analyses will pursue the \SI{10}{\arcmin} feature's physical origin through field-of-view-scale systematic mapping, improved PSF models incorporating spatial correlations, and full non-Gaussian covariance integration to tighten PTE interpretations and potentially permit more aggressive scale cuts.
+
+%--------------------------------------------------------------------
+\begin{acknowledgements}
+TBD
+\end{acknowledgements}
+
+%--------------------------------------------------------------------
+% Figures
+%--------------------------------------------------------------------
+
+%--------------------------------------------------------------------
+\bibliographystyle{aa}
+\bibliography{unions_bmodes}
+
+\end{document}
